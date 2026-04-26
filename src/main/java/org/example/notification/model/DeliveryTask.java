@@ -30,6 +30,12 @@ public class DeliveryTask {
 
     private String httpMethod;
 
+    @Column(length = 4096)
+    private String headersJson;
+
+    @Column(length = 20000)
+    private String body;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TaskStatus status;
@@ -39,6 +45,8 @@ public class DeliveryTask {
 
     @Builder.Default
     private int maxRetries = 3;
+
+    private LocalDateTime nextRetryAt;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

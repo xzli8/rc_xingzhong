@@ -1,24 +1,28 @@
-package org.example.notification.executor;
+package org.example.notification.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.notification.model.DeliveryResult;
 import org.example.notification.model.NotificationRequest;
-import org.springframework.http.*;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * 投递执行模块 - 负责实际HTTP调用外部系统
+ * 对外HTTP投递执行服务
  */
 @Slf4j
-@Component
-public class DeliveryExecutor {
+@Service
+public class DeliveryService {
 
     private final RestTemplate restTemplate;
 
-    public DeliveryExecutor() {
-        org.springframework.http.client.SimpleClientHttpRequestFactory factory =
-                new org.springframework.http.client.SimpleClientHttpRequestFactory();
+    public DeliveryService() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(10000);
         factory.setReadTimeout(10000);
         this.restTemplate = new RestTemplate(factory);
@@ -38,7 +42,7 @@ public class DeliveryExecutor {
                 headers.setContentType(MediaType.APPLICATION_JSON);
             }
 
-            HttpEntity<String> entity = new HttpEntity<>(request.getBody(), headers);
+            HttpEntity<String> entity = new HttpEntity<String>(request.getBody(), headers);
             HttpMethod method = HttpMethod.resolve(request.getHttpMethod().toUpperCase());
             if (method == null) {
                 method = HttpMethod.POST;
